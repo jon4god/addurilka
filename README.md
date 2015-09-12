@@ -1,2 +1,2 @@
 # wp-yandex-addurl
-Work with addurl Yandex
+Work with addurl Yandex.
