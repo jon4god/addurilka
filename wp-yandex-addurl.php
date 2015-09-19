@@ -2,7 +2,7 @@
 /*
 Plugin Name: Yandex Addurl Admin Bar Widgets
 Plugin URI:
-Description: Work with addurl Yandex
+Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to Yandex.
 Version: 0.1
 Author: Evgeniy Kutsenko
 Author URI: http://starcoms.ru
