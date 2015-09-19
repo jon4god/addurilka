@@ -14,10 +14,7 @@ function custom_toolbar_link($wp_admin_bar) {
   function get_check_URL() {
     $check_url = get_permalink();
     print_r ($check_url);
-    if (substr($check_url, -1) == '/') {$check_url = substr($check_url, 0, -1);}
-    if (substr($check_url, 0, 7) == 'http://') {$check_url = substr($check_url, 7);}
-    if (substr($check_url, 0, 8) == 'https://') {$check_url = substr($check_url, 8);}
-    if (substr($check_url, 0, 11) == 'http://www.') {$check_url = substr($check_url, 11);}
+    $check_url = preg_replace('~^https?://(?:www\.)?|/$~', '', $check_url);
     $check_url = rawurlencode($check_url);
     return $check_url;
   }
