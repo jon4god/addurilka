@@ -2,7 +2,7 @@
 Contributors: Evgeniy Kutsenko
 Donate link: http://starcoms.ru/
 Tags: yandex, addurl, seo, Яндекс
-Requires at least: 3.0.1
+Requires at least: 4.3
 Tested up to: 4.3
 Stable tag: 4.3
 License: GPLv2 or later
