@@ -9,22 +9,22 @@ Author URI: http://starcoms.ru
 License: GPL2
 */
 
-$server_name  = $_SERVER["SERVER_NAME"];
-$request_uri  = $_SERVER["REQUEST_URI"];
-
 function custom_toolbar_link($wp_admin_bar) {
 
   function get_check_URL() {
-    $check_url = $server_name . $request_uri;
+    $check_url = get_permalink();
+    print_r ($check_url);
     if (substr($check_url, -1) == '/') {$check_url = substr($check_url, 0, -1);}
-    if (substr($check_url, 0, 4) == 'www.') {$check_url = substr($check_url, 4);}
+    if (substr($check_url, 0, 7) == 'http://') {$check_url = substr($check_url, 7);}
+    if (substr($check_url, 0, 8) == 'https://') {$check_url = substr($check_url, 8);}
+    if (substr($check_url, 0, 11) == 'http://www.') {$check_url = substr($check_url, 11);}
     $check_url = rawurlencode($check_url);
     return $check_url;
   }
   $linkforcheck = 'http://yandex.ru/yandsearch?text=url%3A%28www.'.get_check_URL().'%29+%7C+url%3A%28'.get_check_URL().'%29';
 
   function get_sent_URL() {
-    $sent_url = $server_name . $request_uri;
+    $sent_url = get_permalink();
     $sent_url = rawurlencode($sent_url);
     return $sent_url;
   }
