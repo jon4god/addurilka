@@ -39,10 +39,10 @@ Activate plugin in plugin tab.
 
 == Changelog ==
 
-= 1.0 =
+= 0.1 =
 * Начальная версия
 
 == Upgrade Notice ==
 
-= 1.0 =
+= 0.1 =
 * Начальная версия
