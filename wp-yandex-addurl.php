@@ -21,7 +21,6 @@ function custom_toolbar_link($wp_admin_bar) {
 
   function get_check_URL() {
     $check_url = get_permalink();
-    print_r ($check_url);
     $check_url = preg_replace('~^https?://(?:www\.)?|/$~', '', $check_url);
     $check_url = rawurlencode($check_url);
     return $check_url;
