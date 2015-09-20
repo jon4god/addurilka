@@ -1,7 +1,7 @@
-=== Yandex Addurl Admin Bar Widgets ===
+=== Addurilka ===
 Contributors: Evgeniy Kutsenko
 Donate link: http://starcoms.ru/
-Tags: yandex, addurl, seo, Яндекс
+Tags: yandex, addurl, seo, Яндекс, аддурилка
 Requires at least: 4.3
 Tested up to: 4.3
 Stable tag: 4.3
