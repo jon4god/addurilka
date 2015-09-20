@@ -10,14 +10,14 @@ Author URI: http://starcoms.ru
 License: GPL2
 */
 
-function plugin_init() {
+function wp_ya_addurl_plugin_init() {
     $plugin_dir = basename(dirname(__FILE__));
     load_plugin_textdomain( 'wp-ya-addurl', false, $plugin_dir . '/languages/' );
     define('wp-ya-addurl-dir', plugin_dir_path(__FILE__));
 }
-add_action('plugins_loaded', 'plugin_init');
+add_action('plugins_loaded', 'wp_ya_addurl_plugin_init');
 
-function custom_toolbar_link($wp_admin_bar) {
+function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
   function get_check_URL() {
     $check_url = get_permalink();
@@ -44,7 +44,7 @@ function custom_toolbar_link($wp_admin_bar) {
       'title' => __('Go to Yandex.AddUrl', 'wp-ya-addurl')
     )
   );
-  $wp_admin_bar->add_node($args);
+  $wp_ya_addurl_admin_bar->add_node($args);
 
   $args = array(
     'id' => 'yandexurlcheck',
@@ -57,7 +57,7 @@ function custom_toolbar_link($wp_admin_bar) {
       'title' => __('Checking the links to indexing in Yandex', 'wp-ya-addurl')
     )
   );
-  $wp_admin_bar->add_node($args);
+  $wp_ya_addurl_admin_bar->add_node($args);
 
   $args = array(
     'id' => 'yandexaddurlsent',
@@ -70,7 +70,7 @@ function custom_toolbar_link($wp_admin_bar) {
       'title' => __('Send this page to Yandex.Webmaster', 'wp-ya-addurl')
     )
   );
-  $wp_admin_bar->add_node($args);
+  $wp_ya_addurl_admin_bar->add_node($args);
 }
 
-add_action('admin_bar_menu', 'custom_toolbar_link', 999);
+add_action('admin_bar_menu', 'wp_ya_addurl', 999);
