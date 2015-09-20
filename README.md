@@ -1,4 +1,4 @@
-# wp-yandex-addurl
+# Addurilka
 
 ![Вот так все выглядит](https://github.com/jon4god/wp-yandex-addurl/raw/source/Yandex Addurl Admin Bar Widgets.png)
 
