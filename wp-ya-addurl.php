@@ -19,15 +19,15 @@ add_action('plugins_loaded', 'wp_ya_addurl_plugin_init');
 
 function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
-  function get_check_URL() {
+  function wp_ya_addurl_get_check_URL() {
     $check_url = get_permalink();
     $check_url = preg_replace('~^https?://(?:www\.)?|/$~', '', $check_url);
     $check_url = rawurlencode($check_url);
     return $check_url;
   }
-  $linkforcheck = 'http://yandex.ru/yandsearch?text=url%3A%28www.'.get_check_URL().'%29+%7C+url%3A%28'.get_check_URL().'%29';
+  $linkforcheck = 'http://yandex.ru/yandsearch?text=url%3A%28www.'.wp_ya_addurl_get_check_URL().'%29+%7C+url%3A%28'.wp_ya_addurl_get_check_URL().'%29';
 
-  function get_sent_URL() {
+  function wp_ya_addurl_get_sent_URL() {
     $sent_url = get_permalink();
     $sent_url = rawurlencode($sent_url);
     return $sent_url;
