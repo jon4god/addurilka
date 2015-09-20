@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Yandex Addurl Admin Bar Widgets
+Plugin Name: Addurilka
 Plugin URI: https://github.com/jon4god/wp-yandex-addurl
-Text Domain: wp-yandex-addurl
+Text Domain: wp-ya-addurl
 Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to Yandex.
 Version: 0.1
 Author: Evgeniy Kutsenko
@@ -12,8 +12,8 @@ License: GPL2
 
 function plugin_init() {
     $plugin_dir = basename(dirname(__FILE__));
-    load_plugin_textdomain( 'wp-yandex-addurl', false, $plugin_dir . '/languages/' );
-    define('wp-yandex-addurl-dir', plugin_dir_path(__FILE__));
+    load_plugin_textdomain( 'wp-ya-addurl', false, $plugin_dir . '/languages/' );
+    define('wp-ya-addurl-dir', plugin_dir_path(__FILE__));
 }
 add_action('plugins_loaded', 'plugin_init');
 
@@ -36,38 +36,38 @@ function custom_toolbar_link($wp_admin_bar) {
 
   $args = array(
     'id' => 'yandexaddurl',
-    'title' => __('ADDURILKA', 'wp-yandex-addurl'),
+    'title' => __('ADDURILKA', 'wp-ya-addurl'),
     'href' => 'http://webmaster.yandex.ru/addurl.xml',
     'meta' => array(
       'class' => 'yandexaddurl',
       'target' => '_blank',
-      'title' => __('Go to Yandex.AddUrl', 'wp-yandex-addurl')
+      'title' => __('Go to Yandex.AddUrl', 'wp-ya-addurl')
     )
   );
   $wp_admin_bar->add_node($args);
 
   $args = array(
     'id' => 'yandexurlcheck',
-    'title' => __('Check Links', 'wp-yandex-addurl'),
+    'title' => __('Check Links', 'wp-ya-addurl'),
     'href' => $linkforcheck,
     'parent' => 'yandexaddurl',
     'meta' => array(
       'class' => 'yandexurlcheck',
       'target' => '_blank',
-      'title' => __('Checking the links to indexing in Yandex', 'wp-yandex-addurl')
+      'title' => __('Checking the links to indexing in Yandex', 'wp-ya-addurl')
     )
   );
   $wp_admin_bar->add_node($args);
 
   $args = array(
     'id' => 'yandexaddurlsent',
-    'title' => __('Sending links', 'wp-yandex-addurl'),
+    'title' => __('Sending links', 'wp-ya-addurl'),
     'href' => $linkforsent,
     'parent' => 'yandexaddurl',
     'meta' => array(
       'class' => 'yandexaddurlsent',
       'target' => '_blank',
-      'title' => __('Send this page to Yandex.Webmaster', 'wp-yandex-addurl')
+      'title' => __('Send this page to Yandex.Webmaster', 'wp-ya-addurl')
     )
   );
   $wp_admin_bar->add_node($args);
