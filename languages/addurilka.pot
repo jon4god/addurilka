@@ -1,0 +1,59 @@
+# Copyright (C) 2015 Addurilka
+# This file is distributed under the same license as the Addurilka package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Addurilka 0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/addurilka\n"
+"POT-Creation-Date: 2015-09-21 10:59:56+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+
+#: wp-ya-addurl.php:39
+msgid "ADDURILKA"
+msgstr ""
+
+#: wp-ya-addurl.php:44
+msgid "Go to Yandex.AddUrl"
+msgstr ""
+
+#: wp-ya-addurl.php:51
+msgid "Check Links"
+msgstr ""
+
+#: wp-ya-addurl.php:57
+msgid "Checking the links to indexing in Yandex"
+msgstr ""
+
+#: wp-ya-addurl.php:64
+msgid "Sending links"
+msgstr ""
+
+#: wp-ya-addurl.php:70
+msgid "Send this page to Yandex.Webmaster"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Addurilka"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/jon4god/wp-yandex-addurl"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"A simple plugin that adds a widget to the admin panel to add and verify the "
+"site links to Yandex."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Evgeniy Kutsenko"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://starcoms.ru"
+msgstr ""
