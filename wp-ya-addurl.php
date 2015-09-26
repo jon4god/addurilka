@@ -3,8 +3,8 @@
 Plugin Name: Addurilka
 Plugin URI: https://github.com/jon4god/wp-yandex-addurl
 Text Domain: wp-ya-addurl
-Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to Yandex.
-Version: 0.1
+Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to search engine.
+Version: 0.2
 Author: Evgeniy Kutsenko
 Author URI: http://starcoms.ru
 License: GPL2
@@ -25,32 +25,46 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
     $check_url = rawurlencode($check_url);
     return $check_url;
   }
-  $linkforcheck = 'http://yandex.ru/yandsearch?text=url%3A%28www.'.addurl_get_check_URL().'%29+%7C+url%3A%28'.addurl_get_check_URL().'%29';
+  $linkforcheckyandex = 'http://yandex.ru/yandsearch?text=url%3A%28www.'.addurl_get_check_URL().'%29+%7C+url%3A%28'.addurl_get_check_URL().'%29';
+  $linkforcheckgoogle = 'https://www.google.ru/?q=site:'.addurl_get_check_URL().'#newwindow=1&q=site:'.addurl_get_check_URL().'';
 
   function addurl_get_sent_URL() {
     $sent_url = get_permalink();
     $sent_url = rawurlencode($sent_url);
     return $sent_url;
   }
-  $linkforsent = 'http://webmaster.yandex.ru/addurl.xml?url='.addurl_get_sent_URL();
+  $linkforsenttoyandex = 'http://webmaster.yandex.ru/addurl.xml?url='.addurl_get_sent_URL();
+  $linkforsenttogoogle = 'https://www.google.com/webmasters/tools/submit-url?urlnt='.addurl_get_sent_URL();
 
   $args = array(
-    'id' => 'yandexaddurl',
+    'id' => 'addurilka',
     'title' => __('ADDURILKA', 'wp-ya-addurl'),
-    'href' => 'http://webmaster.yandex.ru/addurl.xml',
     'meta' => array(
-      'class' => 'yandexaddurl',
+      'class' => 'addurilka',
       'target' => '_blank',
-      'title' => __('Go to Yandex.AddUrl', 'wp-ya-addurl')
+      'title' => __('Add url in search engine', 'wp-ya-addurl')
+    )
+  );
+  $wp_ya_addurl_admin_bar->add_node($args);
+
+  $args = array(
+    'id' => 'addurlcheck',
+    'title' => __('Check link', 'wp-ya-addurl'),
+    'href' => $linkforcheckyandex,
+    'parent' => 'addurilka',
+    'meta' => array(
+      'class' => 'addurlcheck',
+      'target' => '_blank',
+      'title' => __('Checking the links to indexing', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
 
   $args = array(
     'id' => 'yandexurlcheck',
-    'title' => __('Check Links', 'wp-ya-addurl'),
-    'href' => $linkforcheck,
-    'parent' => 'yandexaddurl',
+    'title' => __('to Yandex', 'wp-ya-addurl'),
+    'href' => $linkforcheckyandex,
+    'parent' => 'addurlcheck',
     'meta' => array(
       'class' => 'yandexurlcheck',
       'target' => '_blank',
@@ -60,14 +74,53 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $wp_ya_addurl_admin_bar->add_node($args);
 
   $args = array(
+    'id' => 'googleurlcheck',
+    'title' => __('to Google', 'wp-ya-addurl'),
+    'href' => $linkforcheckgoogle,
+    'parent' => 'addurlcheck',
+    'meta' => array(
+      'class' => 'googleurlcheck',
+      'target' => '_blank',
+      'title' => __('Checking the links to indexing in Google', 'wp-ya-addurl')
+    )
+  );
+  $wp_ya_addurl_admin_bar->add_node($args);
+
+  $args = array(
+    'id' => 'addurlsent',
+    'title' => __('To send a link', 'wp-ya-addurl'),
+    'href' => $linkforcheckyandex,
+    'parent' => 'addurilka',
+    'meta' => array(
+      'class' => 'addurlsent',
+      'target' => '_blank',
+      'title' => __('Send the links in search engine', 'wp-ya-addurl')
+    )
+  );
+  $wp_ya_addurl_admin_bar->add_node($args);
+
+  $args = array(
     'id' => 'yandexaddurlsent',
-    'title' => __('Sending links', 'wp-ya-addurl'),
-    'href' => $linkforsent,
-    'parent' => 'yandexaddurl',
+    'title' => __('to Yandex', 'wp-ya-addurl'),
+    'href' => $linkforsenttoyandex,
+    'parent' => 'addurlsent',
     'meta' => array(
       'class' => 'yandexaddurlsent',
       'target' => '_blank',
       'title' => __('Send this page to Yandex.Webmaster', 'wp-ya-addurl')
+    )
+  );
+  $wp_ya_addurl_admin_bar->add_node($args);
+
+  $args = array(
+    'id' => 'googleaddurlsent',
+    'title' => __('to Google', 'wp-ya-addurl'),
+    'href' => $linkforsenttogoogle,
+    'parent' => 'addurlsent',
+    'meta' => array(
+      'class' => 'googleaddurlsent',
+      'target' => '_blank',
+      'title' => __('Send this page to Google', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
