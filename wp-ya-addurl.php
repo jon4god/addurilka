@@ -4,7 +4,7 @@ Plugin Name: Addurilka
 Plugin URI: https://github.com/jon4god/wp-yandex-addurl
 Text Domain: wp-ya-addurl
 Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to search engine.
-Version: 0.2
+Version: 0.3
 Author: Evgeniy Kutsenko
 Author URI: http://starcoms.ru
 License: GPL2
