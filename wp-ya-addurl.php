@@ -36,9 +36,25 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $linkforsenttoyandex = 'http://webmaster.yandex.ru/addurl.xml?url='.addurl_get_sent_URL();
   $linkforsenttogoogle = 'https://www.google.com/webmasters/tools/submit-url?urlnt='.addurl_get_sent_URL();
 
+  $addurilkacheck = '&#9675; ';
+
+  $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'.addurl_get_sent_URL();
+  $body = file_get_contents($url);
+  $json = json_decode($body);
+  foreach ($json->responseData->results as $resultjson) {
+    $result_google['urls']= $resultjson->url;
+    if ($result_google != '') {$checkgoogle = 1;}
+  }
+
+  if ($checkyandex and $checkgoogle) $addurilkacheck = '&#9679; ';
+  if ($checkyandex and !$checkgoogle) $addurilkacheck = '&#9686; ';
+  if (!$checkyandex and $checkgoogle) $addurilkacheck = '&#9687; ';
+
+  $addurilkatitle = $addurilkacheck . __('Addurilka', 'wp-ya-addurl');
+
   $args = array(
     'id' => 'addurilka',
-    'title' => __('ADDURILKA', 'wp-ya-addurl'),
+    'title' => $addurilkatitle,
     'meta' => array(
       'class' => 'addurilka',
       'target' => '_blank',
