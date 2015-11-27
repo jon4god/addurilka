@@ -40,6 +40,27 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $checkyandex = 0;
   $checkgoogle = 0;
   
+  $url = 'https://yandex.ru/search/xml?user=' . get_option('wp_ya_addurl_setting_user') . '&key=' . get_option('wp_ya_addurl_setting_user_key') . '&query='. get_permalink() . '';
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $url);
+  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+  curl_setopt($ch, CURLOPT_HEADER, false);
+  curl_setopt($ch, CURLOPT_NOBODY, false);
+  curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
+  curl_setopt($ch, CURLOPT_INTERFACE, get_option('wp_ya_addurl_setting_user_ip'));
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+  $xml_data = curl_exec($ch);
+  curl_close($ch);
+  //echo $xml_data;
+
+  //echo $url;
+  //https://yandex.ru/search/xml?user=jon4god&key=03.22287144:d55fbd36377a63483e1ce9ce1c5bdaa0&query=http://rr34.ru/ekskursii-v-avstrii-detyam-i-vzroslym/
+  //$result_yandex->url->asXML();
+  //if ($result_google != '') {$checkyandex = 1;}
+
   $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'.addurl_get_sent_URL();
   $body = file_get_contents($url);
   $json = json_decode($body);
@@ -144,5 +165,80 @@ $args = array(
   );
   $wp_ya_addurl_admin_bar->add_node($args);
 }
-
 add_action('admin_bar_menu', 'wp_ya_addurl', 91);
+
+function wp_ya_addurl_settings_init() {
+  add_settings_field(
+    'wp_ya_addurl_setting_user',
+    __('User', 'wp-ya-addurl'),
+    'wp_ya_addurl_setting_user',
+    'reading',
+    'wp_ya_addurl_plugin_menu'
+  );
+  register_setting( 'reading', 'wp_ya_addurl_setting_user' );
+
+  add_settings_field(
+    'wp_ya_addurl_setting_user_key',
+    __('Key', 'wp-ya-addurl'),
+    'wp_ya_addurl_setting_user_key',
+    'reading',
+    'wp_ya_addurl_plugin_menu'
+  );
+  register_setting( 'reading', 'wp_ya_addurl_setting_user_key' );
+
+  add_settings_field(
+    'wp_ya_addurl_setting_user_ip',
+    __('IP', 'wp-ya-addurl'),
+    'wp_ya_addurl_setting_user_ip',
+    'reading',
+    'wp_ya_addurl_plugin_menu'
+  );
+  register_setting( 'reading', 'wp_ya_addurl_setting_user_ip' );
+}
+add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
+
+function wp_ya_addurl_plugin_menu() {
+  add_options_page(__('Addurilka', 'wp-ya-addurl'), __('Addurilka', 'wp-ya-addurl'), 'manage_options', 'wp_ya_addurl-plugin', 'wp_ya_addurl_plugin_page');
+}
+add_action('admin_menu', 'wp_ya_addurl_plugin_menu');
+
+function wp_ya_addurl_plugin_page(){
+  echo '<div class="wrap">';
+  echo "<h2>" . __('Setting for Addurilka', 'wp-ya-addurl') . "</h2>";
+  echo "<h3>" . __('Values ​​display', 'wp-ya-addurl') . "</h3>";
+  echo'<p>&#9679; Addurilka - url in Yandex and Goodle</p>';
+  echo'<p>&#9686; Addurilka - url in Yandex</p>';
+  echo'<p>&#9687; Addurilka - url in Goodle</p>';
+  echo'<p>&#9675; Addurilka - no url in Yandex and Goodle</p>';
+  echo "<h3>" . __('Setting for Yandex', 'wp-ya-addurl') . "</h3>";
+  echo '<form action="options.php" method="post">';
+  wp_nonce_field('update-options');
+  echo '<table class="form-table">
+  <tr valign="top">
+  <tr valign="top">
+  <th scope="row">' . __('Yandex user', 'wp-ya-addurl') . '</th>
+  <td>';
+  echo '<input name="wp_ya_addurl_setting_user" id="wp_ya_addurl_setting_user" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user' ) . '" />
+      <p class="description">' . __('Get a user from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
+  echo '</td>
+  <tr valign="top">
+  <tr valign="top">
+  <th scope="row">' . __('Secret Key', 'wp-ya-addurl') . '</th>
+  <td>';
+  echo '<input name="wp_ya_addurl_setting_user_key" id="wp_ya_addurl_setting_user_key" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user_key' ) . '" />
+      <p class="description">' . __('Get a key from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
+  echo '</td>
+  <tr valign="top">
+  <tr valign="top">
+  <th scope="row">' . __('Your IP', 'wp-ya-addurl') . '</th>
+  <td>';
+  echo '<input name="wp_ya_addurl_setting_user_ip" id="wp_ya_addurl_setting_user_ip" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user_ip' ) . '" />
+      <p class="description">' . __('Get a IP from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
+  echo '</td>
+  </table>
+  </div>
+        <input type="hidden" name="action" value="update" />
+        <input type="hidden" name="page_options" value="wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip" />';
+  echo '<p class="submit"><input type="submit" class="button-primary" value="' . __('Save setting', 'wp-ya-addurl') .'"></p>
+        </form>';
+}
