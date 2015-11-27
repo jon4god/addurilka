@@ -37,7 +37,9 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $linkforsenttogoogle = 'https://www.google.com/webmasters/tools/submit-url?urlnt='.addurl_get_sent_URL();
 
   $addurilkacheck = '&#9675; ';
-
+  $checkyandex = 0;
+  $checkgoogle = 0;
+  
   $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'.addurl_get_sent_URL();
   $body = file_get_contents($url);
   $json = json_decode($body);
@@ -63,14 +65,15 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   );
   $wp_ya_addurl_admin_bar->add_node($args);
 
-  $args = array(
+$args = array(
     'id' => 'addurlcheck',
-    'title' => __('Check link', 'wp-ya-addurl'),
+    'title' => __('Check the link in', 'wp-ya-addurl'),
     'href' => $linkforcheckyandex,
     'parent' => 'addurilka',
     'meta' => array(
       'class' => 'addurlcheck',
       'target' => '_blank',
+      'menu_icon'   => 'dashicons-products',
       'title' => __('Checking the links to indexing', 'wp-ya-addurl')
     )
   );
@@ -78,7 +81,7 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
   $args = array(
     'id' => 'yandexurlcheck',
-    'title' => __('to Yandex', 'wp-ya-addurl'),
+    'title' => __('Yandex', 'wp-ya-addurl'),
     'href' => $linkforcheckyandex,
     'parent' => 'addurlcheck',
     'meta' => array(
@@ -91,7 +94,7 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
   $args = array(
     'id' => 'googleurlcheck',
-    'title' => __('to Google', 'wp-ya-addurl'),
+    'title' => __('Google', 'wp-ya-addurl'),
     'href' => $linkforcheckgoogle,
     'parent' => 'addurlcheck',
     'meta' => array(
@@ -104,7 +107,7 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
   $args = array(
     'id' => 'addurlsent',
-    'title' => __('To send a link', 'wp-ya-addurl'),
+    'title' => __('Send the link to', 'wp-ya-addurl'),
     'href' => $linkforcheckyandex,
     'parent' => 'addurilka',
     'meta' => array(
@@ -117,7 +120,7 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
   $args = array(
     'id' => 'yandexaddurlsent',
-    'title' => __('to Yandex', 'wp-ya-addurl'),
+    'title' => __('Yandex', 'wp-ya-addurl'),
     'href' => $linkforsenttoyandex,
     'parent' => 'addurlsent',
     'meta' => array(
@@ -130,7 +133,7 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
   $args = array(
     'id' => 'googleaddurlsent',
-    'title' => __('to Google', 'wp-ya-addurl'),
+    'title' => __('Google', 'wp-ya-addurl'),
     'href' => $linkforsenttogoogle,
     'parent' => 'addurlsent',
     'meta' => array(
@@ -142,4 +145,4 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $wp_ya_addurl_admin_bar->add_node($args);
 }
 
-add_action('admin_bar_menu', 'wp_ya_addurl', 999);
+add_action('admin_bar_menu', 'wp_ya_addurl', 91);
