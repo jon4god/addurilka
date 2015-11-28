@@ -41,32 +41,35 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $checkgoogle = 0;
   
   $url = 'https://yandex.ru/search/xml?user=' . get_option('wp_ya_addurl_setting_user') . '&key=' . get_option('wp_ya_addurl_setting_user_key') . '&query='. get_permalink() . '';
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_URL, $url);
-  curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-  curl_setopt($ch, CURLOPT_HEADER, false);
-  curl_setopt($ch, CURLOPT_NOBODY, false);
-  curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
-  curl_setopt($ch, CURLOPT_INTERFACE, get_option('wp_ya_addurl_setting_user_ip'));
-  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-  $xml_data = curl_exec($ch);
-  curl_close($ch);
-  //echo $xml_data;
+  $ip = get_option('wp_ya_addurl_setting_user_ip');
+  
+  function addurl_autocheckyandex ($url, $ip) { 
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_NOBODY, false);
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
+    curl_setopt($ch, CURLOPT_INTERFACE, $ip);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    $xml_data = curl_exec($ch);
+    curl_close($ch);
+    $xml = new SimpleXMLElement($xml_data);
+    $xml_url = $xml->response->results->grouping->group->doc->url;
+    if ($xml_url = get_permalink()) $checkyandex = 1;
+    return $checkyandex;
+  }
+  $checkyandex = addurl_autocheckyandex ($url, $ip);
 
-  //echo $url;
-  //https://yandex.ru/search/xml?user=jon4god&key=03.22287144:d55fbd36377a63483e1ce9ce1c5bdaa0&query=http://rr34.ru/ekskursii-v-avstrii-detyam-i-vzroslym/
-  //$result_yandex->url->asXML();
-  //if ($result_google != '') {$checkyandex = 1;}
-
-  $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'.addurl_get_sent_URL();
+  $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'. get_permalink();
   $body = file_get_contents($url);
   $json = json_decode($body);
   foreach ($json->responseData->results as $resultjson) {
     $result_google['urls']= $resultjson->url;
-    if ($result_google != '') {$checkgoogle = 1;}
+    if ($result_google = get_permalink()) {$checkgoogle = 1;}
   }
 
   if ($checkyandex and $checkgoogle) $addurilkacheck = '&#9679; ';
@@ -206,11 +209,12 @@ function wp_ya_addurl_plugin_page(){
   echo '<div class="wrap">';
   echo "<h2>" . __('Setting for Addurilka', 'wp-ya-addurl') . "</h2>";
   echo "<h3>" . __('Values ​​display', 'wp-ya-addurl') . "</h3>";
-  echo'<p>&#9679; Addurilka - url in Yandex and Goodle</p>';
-  echo'<p>&#9686; Addurilka - url in Yandex</p>';
-  echo'<p>&#9687; Addurilka - url in Goodle</p>';
-  echo'<p>&#9675; Addurilka - no url in Yandex and Goodle</p>';
+  echo "<p>&#9679; " . __('Addurilka - url in Yandex and Goodle', 'wp-ya-addurl') . "</p>";
+  echo "<p>&#9686; " . __('Addurilka - url in Yandex', 'wp-ya-addurl') . "</p>";
+  echo "<p>&#9687; " . __('Addurilka - url in Goodle', 'wp-ya-addurl') . "</p>";
+  echo "<p>&#9675; " . __('Addurilka - no url in Yandex and Goodle', 'wp-ya-addurl') . "</p>";
   echo "<h3>" . __('Setting for Yandex', 'wp-ya-addurl') . "</h3>";
+  echo "<p>" . __('In Yandex all very uncomfortable and paranoid, so try to set up autocheck. It can work, but maybe not.', 'wp-ya-addurl') . "</p>";
   echo '<form action="options.php" method="post">';
   wp_nonce_field('update-options');
   echo '<table class="form-table">
