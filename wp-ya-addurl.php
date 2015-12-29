@@ -101,7 +101,7 @@ $args = array(
       'class' => 'addurlcheck',
       'target' => '_blank',
       'menu_icon'   => 'dashicons-products',
-      'title' => __('Checking the links to indexing', 'wp-ya-addurl')
+      'title' => __('Checking the url to indexing', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
@@ -114,7 +114,7 @@ $args = array(
     'meta' => array(
       'class' => 'yandexurlcheck',
       'target' => '_blank',
-      'title' => __('Checking the links to indexing in Yandex', 'wp-ya-addurl')
+      'title' => __('Checking the url to indexing in Yandex', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
@@ -127,7 +127,7 @@ $args = array(
     'meta' => array(
       'class' => 'googleurlcheck',
       'target' => '_blank',
-      'title' => __('Checking the links to indexing in Google', 'wp-ya-addurl')
+      'title' => __('Checking the url to indexing in Google', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
@@ -140,7 +140,7 @@ $args = array(
     'meta' => array(
       'class' => 'addurlsent',
       'target' => '_blank',
-      'title' => __('Send the links in search engine', 'wp-ya-addurl')
+      'title' => __('Send the url in search engine', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
@@ -153,7 +153,7 @@ $args = array(
     'meta' => array(
       'class' => 'yandexaddurlsent',
       'target' => '_blank',
-      'title' => __('Send this page to Yandex.Webmaster', 'wp-ya-addurl')
+      'title' => __('Send this url to Yandex.Webmaster', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
@@ -166,7 +166,7 @@ $args = array(
     'meta' => array(
       'class' => 'googleaddurlsent',
       'target' => '_blank',
-      'title' => __('Send this page to Google', 'wp-ya-addurl')
+      'title' => __('Send this url to Google', 'wp-ya-addurl')
     )
   );
   $wp_ya_addurl_admin_bar->add_node($args);
@@ -221,10 +221,10 @@ function wp_ya_addurl_plugin_page(){
   echo '<div class="wrap">';
   echo "<h2>" . __('Setting for Addurilka', 'wp-ya-addurl') . "</h2>";
   echo "<h3>" . __('Values ​​display for automatic check url (test)', 'wp-ya-addurl') . "</h3>";
-  echo "<p>&#9679; " . __('Addurilka - url in Yandex and Goodle', 'wp-ya-addurl') . "</p>";
+  echo "<p>&#9679; " . __('Addurilka - url in Yandex and Google', 'wp-ya-addurl') . "</p>";
   echo "<p>&#9686; " . __('Addurilka - url in Yandex', 'wp-ya-addurl') . "</p>";
-  echo "<p>&#9687; " . __('Addurilka - url in Goodle', 'wp-ya-addurl') . "</p>";
-  echo "<p>&#9675; " . __('Addurilka - no url in Yandex and Goodle', 'wp-ya-addurl') . "</p>";
+  echo "<p>&#9687; " . __('Addurilka - url in Google', 'wp-ya-addurl') . "</p>";
+  echo "<p>&#9675; " . __('Addurilka - no url in Yandex and Google', 'wp-ya-addurl') . "</p>";
   echo "<h3>" . __('Setting for Yandex', 'wp-ya-addurl') . "</h3>";
   echo "<p>" . __('In Yandex all very uncomfortable and paranoid, so try to set up autocheck. It can work, but maybe not.', 'wp-ya-addurl') . "</p>";
   echo '<form action="options.php" method="post">';
