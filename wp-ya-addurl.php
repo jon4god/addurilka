@@ -36,48 +36,51 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
   $linkforsenttoyandex = 'http://webmaster.yandex.ru/addurl.xml?url='.addurl_get_sent_URL();
   $linkforsenttogoogle = 'https://www.google.com/webmasters/tools/submit-url?urlnt='.addurl_get_sent_URL();
 
-  $addurilkacheck = '&#9675; ';
-  $checkyandex = 0;
-  $checkgoogle = 0;
+  if (get_option('wp_ya_addurl_setting_autocheck') == true) {
+    $addurilkacheck = '&#9675; ';
+    
+    $url = 'https://yandex.ru/search/xml?user=' . get_option('wp_ya_addurl_setting_user') . '&key=' . get_option('wp_ya_addurl_setting_user_key') . '&query='. get_permalink() . '';
+    $ip = get_option('wp_ya_addurl_setting_user_ip');
+    
+    function addurl_autocheckyandex ($url, $ip) {
+      $checkyandex = 0;
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+      curl_setopt($ch, CURLOPT_HEADER, false);
+      curl_setopt($ch, CURLOPT_NOBODY, false);
+      curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
+      curl_setopt($ch, CURLOPT_INTERFACE, $ip);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      $xml_data = curl_exec($ch);
+      curl_close($ch);
+      $xml = new SimpleXMLElement($xml_data);
+      if (isset($xml->response->results->grouping->group->doc->url)) $xml_url = $xml->response->results->grouping->group->doc->url;
+      if ($xml_url = get_permalink()) $checkyandex = 1;
+      return $checkyandex;
+    }
+    $checkyandex = addurl_autocheckyandex ($url, $ip);
   
-  $url = 'https://yandex.ru/search/xml?user=' . get_option('wp_ya_addurl_setting_user') . '&key=' . get_option('wp_ya_addurl_setting_user_key') . '&query='. get_permalink() . '';
-  $ip = get_option('wp_ya_addurl_setting_user_ip');
+    $checkgoogle = 0;
+    $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'. get_permalink();
+    $body = file_get_contents($url);
+    $json = json_decode($body);
+    foreach ($json->responseData->results as $resultjson) {
+      $result_google['urls']= $resultjson->url;
+      if ($result_google = get_permalink()) {$checkgoogle = 1;}
+    }
   
-  function addurl_autocheckyandex ($url, $ip) { 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_HEADER, false);
-    curl_setopt($ch, CURLOPT_NOBODY, false);
-    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
-    curl_setopt($ch, CURLOPT_INTERFACE, $ip);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    $xml_data = curl_exec($ch);
-    curl_close($ch);
-    $xml = new SimpleXMLElement($xml_data);
-    $xml_url = $xml->response->results->grouping->group->doc->url;
-    if ($xml_url = get_permalink()) $checkyandex = 1;
-    return $checkyandex;
-  }
-  $checkyandex = addurl_autocheckyandex ($url, $ip);
-
-  $url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'. get_permalink();
-  $body = file_get_contents($url);
-  $json = json_decode($body);
-  foreach ($json->responseData->results as $resultjson) {
-    $result_google['urls']= $resultjson->url;
-    if ($result_google = get_permalink()) {$checkgoogle = 1;}
-  }
-
-  if ($checkyandex and $checkgoogle) $addurilkacheck = '&#9679; ';
-  if ($checkyandex and !$checkgoogle) $addurilkacheck = '&#9686; ';
-  if (!$checkyandex and $checkgoogle) $addurilkacheck = '&#9687; ';
-
-  $addurilkatitle = $addurilkacheck . __('Addurilka', 'wp-ya-addurl');
-
+    if ($checkyandex and $checkgoogle) $addurilkacheck = '&#9679; ';
+    if ($checkyandex and !$checkgoogle) $addurilkacheck = '&#9686; ';
+    if (!$checkyandex and $checkgoogle) $addurilkacheck = '&#9687; ';
+  
+    $addurilkatitle = $addurilkacheck . __('Addurilka', 'wp-ya-addurl');
+  } 
+  else $addurilkatitle = __('Addurilka', 'wp-ya-addurl');
+  
   $args = array(
     'id' => 'addurilka',
     'title' => $addurilkatitle,
@@ -197,6 +200,15 @@ function wp_ya_addurl_settings_init() {
     'wp_ya_addurl_plugin_menu'
   );
   register_setting( 'reading', 'wp_ya_addurl_setting_user_ip' );
+  
+  add_settings_field(
+    'wp_ya_addurl_setting_autocheck',
+    __('Аutocheck', 'wp-ya-addurl'),
+    'wp_ya_addurl_setting_autocheck',
+    'reading',
+    'wp_ya_addurl_plugin_menu'
+  );
+  register_setting( 'reading', 'wp_ya_addurl_setting_autocheck' );
 }
 add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
 
@@ -208,7 +220,7 @@ add_action('admin_menu', 'wp_ya_addurl_plugin_menu');
 function wp_ya_addurl_plugin_page(){
   echo '<div class="wrap">';
   echo "<h2>" . __('Setting for Addurilka', 'wp-ya-addurl') . "</h2>";
-  echo "<h3>" . __('Values ​​display', 'wp-ya-addurl') . "</h3>";
+  echo "<h3>" . __('Values ​​display for automatic check url (test)', 'wp-ya-addurl') . "</h3>";
   echo "<p>&#9679; " . __('Addurilka - url in Yandex and Goodle', 'wp-ya-addurl') . "</p>";
   echo "<p>&#9686; " . __('Addurilka - url in Yandex', 'wp-ya-addurl') . "</p>";
   echo "<p>&#9687; " . __('Addurilka - url in Goodle', 'wp-ya-addurl') . "</p>";
@@ -219,30 +231,36 @@ function wp_ya_addurl_plugin_page(){
   wp_nonce_field('update-options');
   echo '<table class="form-table">
   <tr valign="top">
+  <th scope="row">' . __('Enable automatic check', 'wp-ya-addurl') . '</th>
+  <td>';
+  echo '<input name="wp_ya_addurl_setting_autocheck" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'wp_ya_addurl_setting_autocheck' ), false ) . ' />';
+  echo '</td>
+  </tr>
   <tr valign="top">
   <th scope="row">' . __('Yandex user', 'wp-ya-addurl') . '</th>
   <td>';
   echo '<input name="wp_ya_addurl_setting_user" id="wp_ya_addurl_setting_user" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user' ) . '" />
       <p class="description">' . __('Get a user from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
   echo '</td>
-  <tr valign="top">
+  </tr>
   <tr valign="top">
   <th scope="row">' . __('Secret Key', 'wp-ya-addurl') . '</th>
   <td>';
   echo '<input name="wp_ya_addurl_setting_user_key" id="wp_ya_addurl_setting_user_key" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user_key' ) . '" />
       <p class="description">' . __('Get a key from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
   echo '</td>
-  <tr valign="top">
+  </tr>
   <tr valign="top">
   <th scope="row">' . __('Your IP', 'wp-ya-addurl') . '</th>
   <td>';
   echo '<input name="wp_ya_addurl_setting_user_ip" id="wp_ya_addurl_setting_user_ip" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user_ip' ) . '" />
       <p class="description">' . __('Get a IP from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
   echo '</td>
+  </tr>
   </table>
   </div>
         <input type="hidden" name="action" value="update" />
-        <input type="hidden" name="page_options" value="wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip" />';
+        <input type="hidden" name="page_options" value="wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip,wp_ya_addurl_setting_autocheck" />';
   echo '<p class="submit"><input type="submit" class="button-primary" value="' . __('Save setting', 'wp-ya-addurl') .'"></p>
         </form>';
 }
