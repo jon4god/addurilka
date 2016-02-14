@@ -10,12 +10,12 @@ Author URI: http://starcoms.ru
 License: GPL2
 */
 
+add_action('plugins_loaded', 'wp_ya_addurl_plugin_init');
 function wp_ya_addurl_plugin_init() {
 		$plugin_dir = basename(dirname(__FILE__));
 		load_plugin_textdomain( 'wp-ya-addurl', false, $plugin_dir . '/languages/' );
 		define('wp-ya-addurl-dir', plugin_dir_path(__FILE__));
 }
-add_action('plugins_loaded', 'wp_ya_addurl_plugin_init');
 
 register_activation_hook( __FILE__, 'addurl_activate');
 function addurl_activate() {
@@ -26,12 +26,20 @@ add_action( 'admin_notices', 'addurl_on_activation_note' );
 function addurl_on_activation_note() {
   if( get_transient( 'addurl-admin-notice' ) ){
       echo '<div class="updated notice is-dismissible">
-      <p>' .__('Please, set <a href="options-general.php?page=wp_ya_addurl-plugin.php">setting</a> for this plugin Addurilka', 'wp-ya-addurl') . '</p> 
+      <p>' .__('Please, set <strong><a href="options-general.php?page=wp_ya_addurl-plugin.php">setting</a></strong> for this plugin.', 'wp-ya-addurl') . '</p> 
       </div>';
     delete_transient( 'addurl-admin-notice' );
   }
 }
 
+add_filter( 'plugin_action_links', 'addurilka_settings_link', 10, 2 );
+function addurilka_settings_link($links) { 
+	$settings_link = '<a href="options-general.php?page=wp_ya_addurl-plugin.php">' . __('Settings', 'wp-ya-addurl') . '</a>'; 
+	array_unshift($links, $settings_link); 
+	return $links; 
+}
+
+add_action('admin_bar_menu', 'wp_ya_addurl', 91);
 function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 
 	function addurl_get_check_URL() {
@@ -200,8 +208,8 @@ $args = array(
 		$wp_ya_addurl_admin_bar->add_node($args);
 	}
 }
-add_action('admin_bar_menu', 'wp_ya_addurl', 91);
 
+add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
 function wp_ya_addurl_settings_init() {
 	add_settings_field(
 		'wp_ya_addurl_setting_user',
@@ -266,13 +274,13 @@ function wp_ya_addurl_settings_init() {
 	);
 	register_setting( 'reading', 'wp_ya_addurl_setting_show_google' );
 }
-add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
 
+add_action('admin_menu', 'wp_ya_addurl_plugin_menu');
 function wp_ya_addurl_plugin_menu() {
 	add_options_page(__('Addurilka', 'wp-ya-addurl'), __('Addurilka', 'wp-ya-addurl'), 'manage_options', 'wp_ya_addurl-plugin', 'wp_ya_addurl_plugin_page');
 }
-add_action('admin_menu', 'wp_ya_addurl_plugin_menu');
 
+add_action( 'admin_head', 'addurilka_menu_css' );
 function addurilka_menu_css() {
 		$addurilka_menu_css = '<style type="text/css">
 			#wpadminbar #wp-admin-bar-addurilka .addurilka-icon:before {
@@ -285,15 +293,6 @@ function addurilka_menu_css() {
 		';
 		echo $addurilka_menu_css;
 }
-add_action( 'admin_head', 'addurilka_menu_css' );
-
-function addurilka_settings_link($links) { 
-	$settings_link = '<a href="options-general.php?page=wp_ya_addurl-plugin.php">' . __('Settings', 'wp-ya-addurl') . '</a>'; 
-	array_unshift($links, $settings_link); 
-	return $links; 
-}
-$plugin = plugin_basename(__FILE__); 
-add_filter("plugin_action_links_$plugin", 'addurilka_settings_link' );
 
 function wp_ya_addurl_plugin_page(){
 	echo '<div class="wrap">';
