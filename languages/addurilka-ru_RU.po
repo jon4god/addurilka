@@ -1,137 +1,188 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Addurilka\n"
-"POT-Creation-Date: 2015-12-30 00:00+0300\n"
-"PO-Revision-Date: 2015-12-30 00:13+0300\n"
+"POT-Creation-Date: 2016-02-19 16:45+0300\n"
+"PO-Revision-Date: 2016-02-19 16:47+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-WPHeader: wp-ya-addurl.php\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
+#: wp-ya-addurl.php:29
+msgid ""
+"Please, set <strong><a href=\"options-general.php?page=wp_ya_addurl-plugin."
+"php\">setting</a></strong> for this plugin."
+msgstr ""
+"Пожалуйста, задайте <strong><a href=«options-general.php?page=wp_ya_addurl-"
+"plugin.php»>настройки</a></strong> для этого плагина."
+
+#: wp-ya-addurl.php:37
+msgid "Settings"
+msgstr "Настройки"
+
+#: wp-ya-addurl.php:102 wp-ya-addurl.php:109
+msgid "A"
+msgstr "A"
+
 #. Plugin Name of the plugin/theme
-#: wp-ya-addurl.php:80 wp-ya-addurl.php:82 wp-ya-addurl.php:216
+#: wp-ya-addurl.php:104 wp-ya-addurl.php:111 wp-ya-addurl.php:280
 msgid "Addurilka"
 msgstr "Аддурилка"
 
-#: wp-ya-addurl.php:90
+#: wp-ya-addurl.php:121
 msgid "Add url in search engine"
 msgstr "Добавить ссылку в поисковые системы"
 
-#: wp-ya-addurl.php:97
+#: wp-ya-addurl.php:128
 msgid "Check the link in"
 msgstr "Проверить ссылку в"
 
-#: wp-ya-addurl.php:104
+#: wp-ya-addurl.php:134
 msgid "Checking the url to indexing"
 msgstr "Проверка ссылки на индексацию"
 
-#: wp-ya-addurl.php:111 wp-ya-addurl.php:150
+#: wp-ya-addurl.php:142 wp-ya-addurl.php:184
 msgid "Yandex"
 msgstr "Яндекс"
 
-#: wp-ya-addurl.php:117
+#: wp-ya-addurl.php:148
 msgid "Checking the url to indexing in Yandex"
 msgstr "Проверка ссылки на индексацию в Яндексе"
 
-#: wp-ya-addurl.php:124 wp-ya-addurl.php:163
+#: wp-ya-addurl.php:157 wp-ya-addurl.php:199
 msgid "Google"
 msgstr "Google"
 
-#: wp-ya-addurl.php:130
+#: wp-ya-addurl.php:163
 msgid "Checking the url to indexing in Google"
 msgstr "Проверка ссылки на индексацию в Google"
 
-#: wp-ya-addurl.php:137
+#: wp-ya-addurl.php:171
 msgid "Send the link to"
 msgstr "Отправить ссылку в"
 
-#: wp-ya-addurl.php:143
+#: wp-ya-addurl.php:176
 msgid "Send the url in search engine"
 msgstr "Отправить ссылку в поисковую систему"
 
-#: wp-ya-addurl.php:156
+#: wp-ya-addurl.php:190
 msgid "Send this url to Yandex.Webmaster"
 msgstr "Отправить эту страницу в Яндекс.Вебмастер"
 
-#: wp-ya-addurl.php:169
+#: wp-ya-addurl.php:205
 msgid "Send this url to Google"
 msgstr "Отправить эту страницу в Google"
 
-#: wp-ya-addurl.php:179
+#: wp-ya-addurl.php:216
 msgid "User"
 msgstr "User"
 
-#: wp-ya-addurl.php:188
+#: wp-ya-addurl.php:225
 msgid "Key"
 msgstr "Key"
 
-#: wp-ya-addurl.php:197
+#: wp-ya-addurl.php:234
 msgid "IP"
 msgstr "IP"
 
-#: wp-ya-addurl.php:206
+#: wp-ya-addurl.php:243
 msgid "Аutocheck"
 msgstr "Автопроверка"
 
-#: wp-ya-addurl.php:222
-msgid "Setting for Addurilka"
-msgstr "Установки для Аддурилки"
+#: wp-ya-addurl.php:252
+msgid "Short name"
+msgstr "Короткое название"
 
-#: wp-ya-addurl.php:223
+#: wp-ya-addurl.php:261
+msgid "Show Yandex"
+msgstr "Показать Яндекс"
+
+#: wp-ya-addurl.php:270
+msgid "Show Google"
+msgstr "Показать Google"
+
+#: wp-ya-addurl.php:285
+msgid "Settings for Addurilka"
+msgstr "Параметры для Addurilka"
+
+#: wp-ya-addurl.php:286
 msgid "Values ​​display for automatic check url (test)"
 msgstr "Значения отображаемые для автоматической проверки ссылки (тест)"
 
-#: wp-ya-addurl.php:224
+#: wp-ya-addurl.php:287
 msgid "Addurilka - url in Yandex and Google"
 msgstr "Аддурилка - ссылка в Яндекс и Google"
 
-#: wp-ya-addurl.php:225
+#: wp-ya-addurl.php:288
 msgid "Addurilka - url in Yandex"
 msgstr "Аддурилка - ссылка в Яндекс"
 
-#: wp-ya-addurl.php:226
+#: wp-ya-addurl.php:289
 msgid "Addurilka - url in Google"
 msgstr "Аддурилка - ссылка в Google"
 
-#: wp-ya-addurl.php:227
+#: wp-ya-addurl.php:290
 msgid "Addurilka - no url in Yandex and Google"
 msgstr "Аддурилка - ссылки нет в Яндекс и Google"
 
-#: wp-ya-addurl.php:228
+#: wp-ya-addurl.php:291
+msgid "Main options"
+msgstr "Основные настройки"
+
+#: wp-ya-addurl.php:296
+msgid "Enable short name"
+msgstr "Применить краткое имя"
+
+#: wp-ya-addurl.php:296
+msgid "Show \"A\""
+msgstr "Показать «А»"
+
+#: wp-ya-addurl.php:302
+msgid "Enable check Yandex"
+msgstr "Включить проверку Яндекс"
+
+#: wp-ya-addurl.php:308
+msgid "Enable check Google"
+msgstr "Включить проверку Google"
+
+#: wp-ya-addurl.php:314
+msgid "Enable automatic check"
+msgstr "Включить автоматическую проверку"
+
+#: wp-ya-addurl.php:314
+msgid "Only for Yandex & Google"
+msgstr "Только для Яндекс и Google"
+
+#: wp-ya-addurl.php:320
 msgid "Setting for Yandex"
 msgstr "Настройки для Яндекса"
 
-#: wp-ya-addurl.php:229
+#: wp-ya-addurl.php:321
 msgid ""
 "In Yandex all very uncomfortable and paranoid, so try to set up autocheck. "
 "It can work, but maybe not."
 msgstr ""
 "В Яндекс все сделано очень неудобно, но мы постараемся настроить "
-"автоматическую проверку ссылок. Проверка может работать, но может быть и "
-"нет."
+"автоматическую проверку ссылок. Проверка может работать, но может быть и нет."
 
-#: wp-ya-addurl.php:234
-msgid "Enable automatic check"
-msgstr "Включить автоматическую проверку"
-
-#: wp-ya-addurl.php:240
+#: wp-ya-addurl.php:324
 msgid "Yandex user"
 msgstr "Пользователь Яндекс"
 
-#: wp-ya-addurl.php:243
+#: wp-ya-addurl.php:327
 msgid ""
 "Get a user from <a href=\"https://xml.yandex.ru/settings/\" target=\"_blank"
 "\">https://xml.yandex.ru/settings/</a>"
@@ -139,11 +190,11 @@ msgstr ""
 "Получить пользователя по ссылке <a href=\"https://xml.yandex.ru/settings/\" "
 "target=\"_blank\">https://xml.yandex.ru/settings/</a>"
 
-#: wp-ya-addurl.php:247
+#: wp-ya-addurl.php:331
 msgid "Secret Key"
 msgstr "Секретный ключ (Secret key)"
 
-#: wp-ya-addurl.php:250
+#: wp-ya-addurl.php:334
 msgid ""
 "Get a key from <a href=\"https://xml.yandex.ru/settings/\" target=\"_blank"
 "\">https://xml.yandex.ru/settings/</a>"
@@ -151,11 +202,11 @@ msgstr ""
 "Получить ключ по ссылке <a href=\"https://xml.yandex.ru/settings/\" target="
 "\"_blank\">https://xml.yandex.ru/settings/</a>"
 
-#: wp-ya-addurl.php:254
+#: wp-ya-addurl.php:338
 msgid "Your IP"
 msgstr "Ваш IP"
 
-#: wp-ya-addurl.php:257
+#: wp-ya-addurl.php:341
 msgid ""
 "Get a IP from <a href=\"https://xml.yandex.ru/settings/\" target=\"_blank"
 "\">https://xml.yandex.ru/settings/</a>"
@@ -163,7 +214,7 @@ msgstr ""
 "Получить IP по ссылке <a href=\"https://xml.yandex.ru/settings/\" target="
 "\"_blank\">https://xml.yandex.ru/settings/</a>"
 
-#: wp-ya-addurl.php:264
+#: wp-ya-addurl.php:348
 msgid "Save setting"
 msgstr "Сохранить настройки"
 
@@ -176,11 +227,25 @@ msgid ""
 "A simple plugin that adds a widget to the admin panel to add and verify the "
 "site links to search engine."
 msgstr ""
+"Простой плагин, который добавляет на панель администратора виджет для "
+"проверки и добавления публикаций в поисковых системах."
 
 #. Author of the plugin/theme
 msgid "Evgeniy Kutsenko"
-msgstr ""
+msgstr "Евгений Куценко"
 
 #. Author URI of the plugin/theme
 msgid "http://starcoms.ru"
 msgstr ""
+
+#~ msgid "Show eye icon"
+#~ msgstr "Показать иконку глаза"
+
+#~ msgid "Enable show Yandex"
+#~ msgstr "Проверять Яндекс"
+
+#~ msgid "Enable show Google"
+#~ msgstr "Разрешить показывать Google"
+
+#~ msgid "Setting for Addurilka"
+#~ msgstr "Установки для Аддурилки"

@@ -2,10 +2,11 @@
 /*
 Plugin Name: Addurilka
 Plugin URI: https://github.com/jon4god/wp-yandex-addurl
-Text Domain: wp-ya-addurl
+Text Domain: addurilka
+Domain Path: /languages
 Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to search engine.
-Version: 0.4
-Author: Evgeniy Kutsenko
+Version: 0.5.1
+Author: jon4god
 Author URI: http://starcoms.ru
 License: GPL2
 */
@@ -13,29 +14,33 @@ License: GPL2
 add_action('plugins_loaded', 'wp_ya_addurl_plugin_init');
 function wp_ya_addurl_plugin_init() {
 		$plugin_dir = basename(dirname(__FILE__));
-		load_plugin_textdomain( 'wp-ya-addurl', false, $plugin_dir . '/languages/' );
-		define('wp-ya-addurl-dir', plugin_dir_path(__FILE__));
+		load_plugin_textdomain( 'addurilka', false, $plugin_dir . '/languages/' );
+		define('addurilka-dir', plugin_dir_path(__FILE__));
 }
 
 register_activation_hook( __FILE__, 'addurl_activate');
 function addurl_activate() {
   set_transient( 'addurl-admin-notice', true, 5 );
+  add_option('wp_ya_addurl_setting_show_yandex', 1);
+  add_option('wp_ya_addurl_setting_show_google', 1);
+  add_option('wp_ya_addurl_setting_webmaster_tool', 1);
 }
 
 add_action( 'admin_notices', 'addurl_on_activation_note' );
 function addurl_on_activation_note() {
   if( get_transient( 'addurl-admin-notice' ) ){
       echo '<div class="updated notice is-dismissible">
-      <p>' .__('Please, set <strong><a href="options-general.php?page=wp_ya_addurl-plugin.php">setting</a></strong> for this plugin.', 'wp-ya-addurl') . '</p> 
+      <p>' .__('Please, set setting for Addurilka plugin.', 'addurilka') . '</p> 
       </div>';
     delete_transient( 'addurl-admin-notice' );
   }
 }
 
-add_filter( 'plugin_action_links', 'addurilka_settings_link', 10, 2 );
-function addurilka_settings_link($links) { 
-	$settings_link = '<a href="options-general.php?page=wp_ya_addurl-plugin.php">' . __('Settings', 'wp-ya-addurl') . '</a>'; 
-	array_unshift($links, $settings_link); 
+$plugin_file = plugin_basename(__FILE__); 
+add_filter("plugin_action_links_$plugin_file", 'addurl_plugin_settings_link' );
+function addurl_plugin_settings_link($links) { 
+	$settings_link = '<a href="options-general.php?page=wp_ya_addurl-plugin">' . __('Settings', 'addurilka') . '</a>'; 
+	array_unshift( $links, $settings_link ); 
 	return $links; 
 }
 
@@ -57,34 +62,44 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 		return $sent_url;
 	}
 	$linkforsenttoyandex = 'http://webmaster.yandex.ru/addurl.xml?url='.addurl_get_sent_URL();
-	$linkforsenttogoogle = 'https://www.google.com/webmasters/tools/submit-url?urlnt='.addurl_get_sent_URL();
+	$linkforsenttogoogle = 'https://www.google.com/Webmaster/tools/submit-url?urlnt='.addurl_get_sent_URL();
 
 	if (get_option('wp_ya_addurl_setting_autocheck') == true) {
 		$addurilkacheck = '&#9675; ';
-		$url = 'https://yandex.ru/search/xml?user=' . get_option('wp_ya_addurl_setting_user') . '&key=' . get_option('wp_ya_addurl_setting_user_key') . '&query='. get_permalink() . '';
-		$ip = get_option('wp_ya_addurl_setting_user_ip');
-		function addurl_autocheckyandex ($url, $ip) {
-			$checkyandex = 0;
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_HEADER, false);
-			curl_setopt($ch, CURLOPT_NOBODY, false);
-			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
-			curl_setopt($ch, CURLOPT_INTERFACE, $ip);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-			$xml_data = curl_exec($ch);
-			curl_close($ch);
-			$xml = new SimpleXMLElement($xml_data);
-			if (isset($xml->response->results->grouping->group->doc->url)) $xml_url = $xml->response->results->grouping->group->doc->url;
-			if ($xml_url = get_permalink()) $checkyandex = 1;
-			return $checkyandex;
-		}
-		$checkyandex = addurl_autocheckyandex ($url, $ip);
-	
+		if (get_option('wp_ya_addurl_setting_user') && get_option('wp_ya_addurl_setting_user_key') && get_option('wp_ya_addurl_setting_user_ip')) {
+  		$url = 'https://yandex.ru/search/xml?user=' . get_option('wp_ya_addurl_setting_user') . '&key=' . get_option('wp_ya_addurl_setting_user_key') . '&query='. get_permalink() . '';
+  		$ip = get_option('wp_ya_addurl_setting_user_ip');
+  		function addurl_autocheckyandex ($url, $ip) {
+  			$checkyandex = 0;
+  			$ch = curl_init();
+  			curl_setopt($ch, CURLOPT_URL, $url);
+  			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+  			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+  			curl_setopt($ch, CURLOPT_HEADER, false);
+  			curl_setopt($ch, CURLOPT_NOBODY, false);
+  			curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (Windows; U; Windows NT 5.0; En; rv:1.8.0.2) Gecko/20070306 Firefox/1.0.0.4");
+  			curl_setopt($ch, CURLOPT_INTERFACE, $ip);
+  			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+  			$xml_data = curl_exec($ch);
+  			curl_close($ch);
+  			$xml = new SimpleXMLElement($xml_data);
+  			if (isset($xml->response->results->grouping->group->doc->url)) $xml_url = $xml->response->results->grouping->group->doc->url;
+  			if ($xml_url = get_permalink()) $checkyandex = 1;
+  			return $checkyandex;
+  		}
+  		$checkyandex = addurl_autocheckyandex ($url, $ip);
+    } else {
+      $checkyandex = 0;
+      if( get_transient( 'addurl-admin-notice-2' ) ){
+        echo '<div class="updated notice is-dismissible">
+        <p>' .__('Please, enter all <strong><a href="options-general.php?page=wp_ya_addurl-plugin.php">setting</a></strong> for Yandex.XML. Automatic check link for Yandex not working.', 'addurilka') . '</p> 
+        </div>';
+        delete_transient( 'addurl-admin-notice-2' );
+      }
+    }
+    
 		$checkgoogle = 0;
 		$url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'. get_permalink();
 		$body = file_get_contents($url);
@@ -99,16 +114,16 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 		if (!$checkyandex and $checkgoogle) $addurilkacheck = '&#9687; ';
 	
 		if (get_option('wp_ya_addurl_setting_short_name') == true) {
-			$addurilkatitle = $addurilkacheck . __('A', 'wp-ya-addurl');
+			$addurilkatitle = $addurilkacheck . __('A', 'addurilka');
 		} else {
-			$addurilkatitle = $addurilkacheck . __('Addurilka', 'wp-ya-addurl');
+			$addurilkatitle = $addurilkacheck . __('Addurilka', 'addurilka');
 		}
 	} 
 	else {
 		if (get_option('wp_ya_addurl_setting_short_name') == true) {
-			$addurilkatitle = '<span class="addurilka-icon"></span>';
+			$addurilkatitle = __('A', 'addurilka');
 		} else {
-			$addurilkatitle = __('Addurilka', 'wp-ya-addurl');
+			$addurilkatitle = __('Addurilka', 'addurilka');
 		}
 	}
 	
@@ -118,20 +133,20 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 		'meta' => array(
 			'class' => 'addurilka',
 			'target' => '_blank',
-			'title' => __('Add url in search engine', 'wp-ya-addurl')
+			'title' => __('Add url in search engine', 'addurilka')
 		)
 	);
 	$wp_ya_addurl_admin_bar->add_node($args);
 
 $args = array(
 		'id' => 'addurlcheck',
-		'title' => __('Check the link in', 'wp-ya-addurl'),
+		'title' => __('Check the link in', 'addurilka'),
 		'parent' => 'addurilka',
 		'meta' => array(
 			'class' => 'addurlcheck',
 			'target' => '_blank',
 			'menu_icon'		=> 'dashicons-products',
-			'title' => __('Checking the url to indexing', 'wp-ya-addurl')
+			'title' => __('Checking the url to indexing', 'addurilka')
 		)
 	);
 	$wp_ya_addurl_admin_bar->add_node($args);
@@ -139,13 +154,13 @@ $args = array(
 	if (get_option('wp_ya_addurl_setting_show_yandex') == true) {
 		$args = array(
 			'id' => 'yandexurlcheck',
-			'title' => __('Yandex', 'wp-ya-addurl'),
+			'title' => __('Yandex', 'addurilka'),
 			'href' => $linkforcheckyandex,
 			'parent' => 'addurlcheck',
 			'meta' => array(
 				'class' => 'yandexurlcheck',
 				'target' => '_blank',
-				'title' => __('Checking the url to indexing in Yandex', 'wp-ya-addurl')
+				'title' => __('Checking the url to indexing in Yandex', 'addurilka')
 			)
 		);
 		$wp_ya_addurl_admin_bar->add_node($args);
@@ -154,13 +169,13 @@ $args = array(
 	if (get_option('wp_ya_addurl_setting_show_google') == true) {
 		$args = array(
 			'id' => 'googleurlcheck',
-			'title' => __('Google', 'wp-ya-addurl'),
+			'title' => __('Google', 'addurilka'),
 			'href' => $linkforcheckgoogle,
 			'parent' => 'addurlcheck',
 			'meta' => array(
 				'class' => 'googleurlcheck',
 				'target' => '_blank',
-				'title' => __('Checking the url to indexing in Google', 'wp-ya-addurl')
+				'title' => __('Checking the url to indexing in Google', 'addurilka')
 			)
 		);
 		$wp_ya_addurl_admin_bar->add_node($args);
@@ -168,12 +183,12 @@ $args = array(
 
 	$args = array(
 		'id' => 'addurlsent',
-		'title' => __('Send the link to', 'wp-ya-addurl'),
+		'title' => __('Send the link to', 'addurilka'),
 		'parent' => 'addurilka',
 		'meta' => array(
 			'class' => 'addurlsent',
 			'target' => '_blank',
-			'title' => __('Send the url in search engine', 'wp-ya-addurl')
+			'title' => __('Send the url in search engine', 'addurilka')
 		)
 	);
 	$wp_ya_addurl_admin_bar->add_node($args);
@@ -181,13 +196,13 @@ $args = array(
 	if (get_option('wp_ya_addurl_setting_show_yandex') == true) {
 		$args = array(
 			'id' => 'yandexaddurlsent',
-			'title' => __('Yandex', 'wp-ya-addurl'),
+			'title' => __('Yandex', 'addurilka'),
 			'href' => $linkforsenttoyandex,
 			'parent' => 'addurlsent',
 			'meta' => array(
 				'class' => 'yandexaddurlsent',
 				'target' => '_blank',
-				'title' => __('Send this url to Yandex.Webmaster', 'wp-ya-addurl')
+				'title' => __('Send this url to Yandex.Webmaster', 'addurilka')
 			)
 		);
 		$wp_ya_addurl_admin_bar->add_node($args);
@@ -196,24 +211,142 @@ $args = array(
 	if (get_option('wp_ya_addurl_setting_show_google') == true) {
 		$args = array(
 			'id' => 'googleaddurlsent',
-			'title' => __('Google', 'wp-ya-addurl'),
+			'title' => __('Google', 'addurilka'),
 			'href' => $linkforsenttogoogle,
 			'parent' => 'addurlsent',
 			'meta' => array(
 				'class' => 'googleaddurlsent',
 				'target' => '_blank',
-				'title' => __('Send this url to Google', 'wp-ya-addurl')
+				'title' => __('Send this url to Google', 'addurilka')
 			)
 		);
 		$wp_ya_addurl_admin_bar->add_node($args);
 	}
+	
+	if (get_option('wp_ya_addurl_setting_webmaster_tool') == true) {
+  $args = array(
+		'id' => 'addsite',
+		'title' => __('Add the site to', 'addurilka'),
+		'parent' => 'addurilka',
+		'meta' => array(
+			'class' => 'addsite',
+			'target' => '_blank',
+			'title' => __('Add the site in search engine webmaster', 'addurilka')
+		)
+	);
+	$wp_ya_addurl_admin_bar->add_node($args);
+	}
+	
+	  $args = array(
+			'id' => 'googleWebmaster',
+			'title' => __('Google Webmaster', 'addurilka'),
+			'href' => 'https://www.google.com/Webmaster/tools/home',
+			'parent' => 'addsite',
+			'meta' => array(
+				'class' => 'googleWebmaster',
+				'target' => '_blank',
+				'title' => __('Send site to Google Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'yaWebmaster',
+			'title' => __('Yandex Webmaster', 'addurilka'),
+			'href' => 'https://webmaster.yandex.ru/?tab=1',
+			'parent' => 'addsite',
+			'meta' => array(
+				'class' => 'yaWebmaster',
+				'target' => '_blank',
+				'title' => __('Open Yandex Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'yasitesent',
+			'title' => __('Yandex add site', 'addurilka'),
+			'href' => 'https://webmaster.yandex.ru/site/?wizard=add.site',
+			'parent' => 'yaWebmaster',
+			'meta' => array(
+				'class' => 'yasitesent',
+				'target' => '_blank',
+				'title' => __('Send site to Yandex Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'bingwebmaster',
+			'title' => __('Bing Webmaster', 'addurilka'),
+			'href' => 'http://www.bing.com/toolbox/webmaster',
+			'parent' => 'addsite',
+			'meta' => array(
+				'class' => 'bingwebmaster',
+				'target' => '_blank',
+				'title' => __('Open Bing Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'bingsitesent',
+			'title' => __('Bing add site', 'addurilka'),
+			'href' => 'http://www.bing.com/toolbox/submit-site-url?url=' . home_url()  . '',
+			'parent' => 'bingwebmaster',
+			'meta' => array(
+				'class' => 'bingsitesent',
+				'target' => '_blank',
+				'title' => __('Send site to Bing', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'baiduWebmaster',
+			'title' => __('Baidu Webmaster', 'addurilka'),
+			'href' => 'http://zhanzhang.baidu.com/linksubmit/url',
+			'parent' => 'addsite',
+			'meta' => array(
+				'class' => 'baiduWebmaster',
+				'target' => '_blank',
+				'title' => __('Send site to Baidu Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'mailWebmaster',
+			'title' => __('Mail.ru Webmaster', 'addurilka'),
+			'href' => 'http://webmaster.mail.ru/',
+			'parent' => 'addsite',
+			'meta' => array(
+				'class' => 'mailWebmaster',
+				'target' => '_blank',
+				'title' => __('Open Mail.ru Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
+		
+		$args = array(
+			'id' => 'sputnikWebmaster',
+			'title' => __('Sputnik Webmaster', 'addurilka'),
+			'href' => 'http://corp.sputnik.ru/webmaster',
+			'parent' => 'addsite',
+			'meta' => array(
+				'class' => 'sputnikWebmaster',
+				'target' => '_blank',
+				'title' => __('Open Sputnik Webmaster', 'addurilka')
+			)
+		);
+		$wp_ya_addurl_admin_bar->add_node($args);
 }
 
 add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
 function wp_ya_addurl_settings_init() {
 	add_settings_field(
 		'wp_ya_addurl_setting_user',
-		__('User', 'wp-ya-addurl'),
+		__('User', 'addurilka'),
 		'wp_ya_addurl_setting_user',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
@@ -222,7 +355,7 @@ function wp_ya_addurl_settings_init() {
 
 	add_settings_field(
 		'wp_ya_addurl_setting_user_key',
-		__('Key', 'wp-ya-addurl'),
+		__('Key', 'addurilka'),
 		'wp_ya_addurl_setting_user_key',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
@@ -231,7 +364,7 @@ function wp_ya_addurl_settings_init() {
 
 	add_settings_field(
 		'wp_ya_addurl_setting_user_ip',
-		__('IP', 'wp-ya-addurl'),
+		__('IP', 'addurilka'),
 		'wp_ya_addurl_setting_user_ip',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
@@ -240,7 +373,7 @@ function wp_ya_addurl_settings_init() {
 	
 	add_settings_field(
 		'wp_ya_addurl_setting_autocheck',
-		__('Аutocheck', 'wp-ya-addurl'),
+		__('Аutocheck', 'addurilka'),
 		'wp_ya_addurl_setting_autocheck',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
@@ -249,7 +382,7 @@ function wp_ya_addurl_settings_init() {
 	
 	add_settings_field(
 		'wp_ya_addurl_setting_short_name',
-		__('Short name', 'wp-ya-addurl'),
+		__('Short name', 'addurilka'),
 		'wp_ya_addurl_setting_short_name',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
@@ -258,7 +391,7 @@ function wp_ya_addurl_settings_init() {
 	
 	add_settings_field(
 		'wp_ya_addurl_setting_show_yandex',
-		__('Show Yandex', 'wp-ya-addurl'),
+		__('Show Yandex', 'addurilka'),
 		'wp_ya_addurl_setting_show_yandex',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
@@ -267,99 +400,100 @@ function wp_ya_addurl_settings_init() {
 
 	add_settings_field(
 		'wp_ya_addurl_setting_show_google',
-		__('Show Google', 'wp-ya-addurl'),
+		__('Show Google', 'addurilka'),
 		'wp_ya_addurl_setting_show_google',
 		'reading',
 		'wp_ya_addurl_plugin_menu'
 	);
 	register_setting( 'reading', 'wp_ya_addurl_setting_show_google' );
+	
+	add_settings_field(
+		'wp_ya_addurl_setting_webmaster_tool',
+		__('Show Webmaster Tools', 'addurilka'),
+		'wp_ya_addurl_setting_webmaster_tool',
+		'reading',
+		'wp_ya_addurl_plugin_menu'
+	);
+	register_setting( 'reading', 'wp_ya_addurl_setting_webmaster_tool' );
 }
 
 add_action('admin_menu', 'wp_ya_addurl_plugin_menu');
 function wp_ya_addurl_plugin_menu() {
-	add_options_page(__('Addurilka', 'wp-ya-addurl'), __('Addurilka', 'wp-ya-addurl'), 'manage_options', 'wp_ya_addurl-plugin', 'wp_ya_addurl_plugin_page');
-}
-
-add_action( 'admin_head', 'addurilka_menu_css' );
-function addurilka_menu_css() {
-		$addurilka_menu_css = '<style type="text/css">
-			#wpadminbar #wp-admin-bar-addurilka .addurilka-icon:before {
-				font-family: "dashicons";
-				font-size: 20px;
-				content: "\f177";
-				top: 3px;
-			}
-		</style>
-		';
-		echo $addurilka_menu_css;
+	add_options_page(__('Addurilka', 'addurilka'), __('Addurilka', 'addurilka'), 'manage_options', 'wp_ya_addurl-plugin', 'wp_ya_addurl_plugin_page');
 }
 
 function wp_ya_addurl_plugin_page(){
 	echo '<div class="wrap">';
-	echo "<h2>" . __('Settings for Addurilka', 'wp-ya-addurl') . "</h2>";
-	echo "<h3>" . __('Values ​​display for automatic check url (test)', 'wp-ya-addurl') . "</h3>";
-	echo "<p>&#9679; " . __('Addurilka - url in Yandex and Google', 'wp-ya-addurl') . "</p>";
-	echo "<p>&#9686; " . __('Addurilka - url in Yandex', 'wp-ya-addurl') . "</p>";
-	echo "<p>&#9687; " . __('Addurilka - url in Google', 'wp-ya-addurl') . "</p>";
-	echo "<p>&#9675; " . __('Addurilka - no url in Yandex and Google', 'wp-ya-addurl') . "</p>";
-	echo "<h3>" . __('Main options', 'wp-ya-addurl') . "</h3>";
+	echo "<h2>" . __('Settings for Addurilka', 'addurilka') . "</h2>";
+	echo "<h3>" . __('Values ​​display for automatic check url (test)', 'addurilka') . "</h3>";
+	echo "<p>&#9679; " . __('Addurilka - url in Yandex and Google', 'addurilka') . "</p>";
+	echo "<p>&#9686; " . __('Addurilka - url in Yandex', 'addurilka') . "</p>";
+	echo "<p>&#9687; " . __('Addurilka - url in Google', 'addurilka') . "</p>";
+	echo "<p>&#9675; " . __('Addurilka - no url in Yandex and Google', 'addurilka') . "</p>";
+	echo "<h3>" . __('Main options', 'addurilka') . "</h3>";
 	echo '<form action="options.php" method="post">';
 	wp_nonce_field('update-options');
 	echo '<table class="form-table">
 	<tr valign="top">
-	<th scope="row">' . __('Enable short name', 'wp-ya-addurl') . '<p class="description">' . __('Show eye icon', 'wp-ya-addurl') . '</p></th>
+	<th scope="row">' . __('Enable short name', 'addurilka') . '<p class="description">' . __('Show "A"', 'addurilka') . '</p></th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_short_name" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'wp_ya_addurl_setting_short_name' ), false ) . ' />';
 	echo '</td>
 	</tr>
+  <tr valign="top">
+	<th scope="row">' . __('Enable show Webmaster tool', 'addurilka') . '</th>
+	<td>';
+	echo '<input name="wp_ya_addurl_setting_webmaster_tool" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'wp_ya_addurl_setting_webmaster_tool' ), false ) . ' />';
+	echo '</td>
+	</tr>
 	<tr valign="top">
-	<th scope="row">' . __('Enable show Yandex', 'wp-ya-addurl') . '</th>
+	<th scope="row">' . __('Enable check Yandex', 'addurilka') . '</th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_show_yandex" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'wp_ya_addurl_setting_show_yandex' ), false ) . ' />';
 	echo '</td>
 	</tr>
 	<tr valign="top">
-	<th scope="row">' . __('Enable show Google', 'wp-ya-addurl') . '</th>
+	<th scope="row">' . __('Enable check Google', 'addurilka') . '</th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_show_google" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'wp_ya_addurl_setting_show_google' ), false ) . ' />';
 	echo '</td>
 	</tr>
 	<tr valign="top">
-	<th scope="row">' . __('Enable automatic check', 'wp-ya-addurl') . '<p class="description">' . __('Only for Yandex & Google', 'wp-ya-addurl') . '</p></th>
+	<th scope="row">' . __('Enable automatic check', 'addurilka') . '<p class="description">' . __('Only for Yandex & Google', 'addurilka') . '</p></th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_autocheck" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'wp_ya_addurl_setting_autocheck' ), false ) . ' />';
 	echo '</td>
 	</tr>
 	<tr>
-	<td><h3>' . __('Setting for Yandex', 'wp-ya-addurl') . '</h3></td>
-	<td><p>' . __('In Yandex all very uncomfortable and paranoid, so try to set up autocheck. It can work, but maybe not.', 'wp-ya-addurl') . '</p></td>
+	<td><h3>' . __('Setting for Yandex', 'addurilka') . '</h3></td>
+	<td><p>' . __('In Yandex all very uncomfortable and paranoid, so try to set up autocheck. It can work, but maybe not.', 'addurilka') . '</p></td>
 	</tr>
 	<tr valign="top">
-	<th scope="row">' . __('Yandex user', 'wp-ya-addurl') . '</th>
+	<th scope="row">' . __('Yandex user', 'addurilka') . '</th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_user" id="wp_ya_addurl_setting_user" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user' ) . '" />
-			<p class="description">' . __('Get a user from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
+			<p class="description">' . __('Get a user from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'addurilka') . "</p>";
 	echo '</td>
 	</tr>
 	<tr valign="top">
-	<th scope="row">' . __('Secret Key', 'wp-ya-addurl') . '</th>
+	<th scope="row">' . __('Secret Key', 'addurilka') . '</th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_user_key" id="wp_ya_addurl_setting_user_key" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user_key' ) . '" />
-			<p class="description">' . __('Get a key from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
+			<p class="description">' . __('Get a key from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'addurilka') . "</p>";
 	echo '</td>
 	</tr>
 	<tr valign="top">
-	<th scope="row">' . __('Your IP', 'wp-ya-addurl') . '</th>
+	<th scope="row">' . __('Your IP', 'addurilka') . '</th>
 	<td>';
 	echo '<input name="wp_ya_addurl_setting_user_ip" id="wp_ya_addurl_setting_user_ip" type="text" class="code" value="' . get_option( 'wp_ya_addurl_setting_user_ip' ) . '" />
-			<p class="description">' . __('Get a IP from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'wp-ya-addurl') . "</p>";
+			<p class="description">' . __('Get a IP from <a href="https://xml.yandex.ru/settings/" target="_blank">https://xml.yandex.ru/settings/</a>', 'addurilka') . "</p>";
 	echo '</td>
 	</tr>
 	</table>
 	</div>
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="wp_ya_addurl_setting_show_google,wp_ya_addurl_setting_show_yandex,wp_ya_addurl_setting_short_name,wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip,wp_ya_addurl_setting_autocheck" />';
-	echo '<p class="submit"><input type="submit" class="button-primary" value="' . __('Save setting', 'wp-ya-addurl') .'"></p>
+				<input type="hidden" name="page_options" value="wp_ya_addurl_setting_show_google,wp_ya_addurl_setting_webmaster_tool,wp_ya_addurl_setting_show_yandex,wp_ya_addurl_setting_short_name,wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip,wp_ya_addurl_setting_autocheck" />';
+	echo '<p class="submit"><input type="submit" class="button-primary" value="' . __('Save setting', 'addurilka') .'"></p>
 				</form>';
 }
 ?>
