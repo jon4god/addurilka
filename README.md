@@ -7,4 +7,8 @@
 
 ...и добавить её в случае отсутствия в поисковые системы.
 
+[Плагин на Wordpress.org](https://wordpress.org/plugins/addurilka/)
+
 A simple plugin that adds a widget to the admin panel to add and verify the site links to search engines.
+
+[Plugin on the Wordpress.org](https://wordpress.org/plugins/addurilka/)
