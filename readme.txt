@@ -3,7 +3,7 @@ Contributors: jon4god
 Donate link: http://starcoms.ru/
 Tags: yandex, google, addurl, seo, Яндекс, аддурилка
 Requires at least: 4.3
-Tested up to: 4.4.2
+Tested up to: 4.6-alpha-37185
 Stable tag: 0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -45,6 +45,7 @@ Go in the plugin settings and configure it.
 
 = 0.6 =
 * Внесены изменения для перевода на другие языки.
+* Исправлены мелкие ошибки.
 
 = 0.5.1 =
 * Исправлена ошибка с переходом к настройкам со страницы установленных плагинов.

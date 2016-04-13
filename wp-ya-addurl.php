@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Addurilka
-Plugin URI: https://github.com/jon4god/wp-yandex-addurl
+Plugin URI: https://github.com/jon4god/addurilka
 Text Domain: addurilka
 Domain Path: /languages
 Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to search engine.
@@ -104,9 +104,11 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 		$url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site:'. get_permalink();
 		$body = file_get_contents($url);
 		$json = json_decode($body);
+		if ($json!="") {
 		foreach ($json->responseData->results as $resultjson) {
 			$result_google['urls']= $resultjson->url;
 			if ($result_google = get_permalink()) {$checkgoogle = 1;}
+		}
 		}
 	
 		if ($checkyandex and $checkgoogle) $addurilkacheck = '&#9679; ';
@@ -423,6 +425,8 @@ function wp_ya_addurl_plugin_menu() {
 }
 
 function wp_ya_addurl_plugin_page(){
+	echo '<table width="100%">';
+  echo '<tr><td valign="top">';
 	echo '<div class="wrap">';
 	echo "<h2>" . __('Settings for Addurilka', 'addurilka') . "</h2>";
 	echo "<h3>" . __('Values ​​display for automatic check url (test)', 'addurilka') . "</h3>";
@@ -495,5 +499,30 @@ function wp_ya_addurl_plugin_page(){
 				<input type="hidden" name="page_options" value="wp_ya_addurl_setting_show_google,wp_ya_addurl_setting_webmaster_tool,wp_ya_addurl_setting_show_yandex,wp_ya_addurl_setting_short_name,wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip,wp_ya_addurl_setting_autocheck" />';
 	echo '<p class="submit"><input type="submit" class="button-primary" value="' . __('Save setting', 'addurilka') .'"></p>
 				</form>';
+  echo '</td>';
+  ?>
+  <!-- !Информация о плагине -->
+  <td valign="top" align="left" width="30%">
+  <div style="padding: 1.5em; background-color: #FAFAFA; border: 1px solid #ddd; margin: 1em; float: right; width: 22em;">
+	<h3><?php _e('Thanks for using Addurilka', 'addurilka') ?></h3>
+	<p style="float: right; margin: 0 0 1em 1em;"><a href="http://starcoms.ru" target="_blank"><?php echo get_avatar("jon4god@mail.ru", '64'); ?></a></p>
+	<p><?php _e('Dear admin!<br />Thank you for using my plugin!<br />I hope it is useful for your site.', 'addurilka') ?></p>
+	<p><a href="http://starcoms.ru" target="_blank"><?php _e('Evgeniy Kutsenko', 'addurilka') ?></a></p>
+
+	<h3><?php _e('I like this plugin<br>– how can I thank you?', 'addurilka') ?></h3>
+	<p><?php _e('There are several ways for you to say thanks:', 'addurilka') ?></p>
+	<ul style="list-style-type: disc; margin-left: 20px;">
+		<li><?php printf(__('<a href="%1$s" target="_blank">Buy me a cup of coffee</a> to stay awake and work on this plugin', 'addurilka'), "https://www.paypal.me/jon4god") ?></li>
+		<li><?php printf(__('<a href="%1$s" target="_blank">Give 5 stars</a> over at the WordPress Plugin Directory', 'addurilka'), "https://wordpress.org/support/view/plugin-reviews/addurilka") ?></li>
+		<li><?php printf(__('Share infotmation or make a nice blog post about the plugin', 'addurilka')) ?></li>
+	</ul>
+
+	<h3><?php _e('Support', 'addurilka') ?></h3>
+	<p><?php printf(__('Please see the <a href="%1$s" target="_blank">support forum</a> or <a href="%2$s" target="_blank">plugin\'s site</a> for help.', 'addurilka'), "https://wordpress.org/support/plugin/addurilka", "http://wp.starcoms.ru/plugin-addurilka/") ?></p>
+	
+	<h1><?php _e("Good luck!", 'addurilka') ?></h1>
+  </div>
+</td></tr></table>
+<?php 
 }
 ?>
