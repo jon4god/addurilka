@@ -5,7 +5,7 @@ Plugin URI: https://github.com/jon4god/addurilka
 Text Domain: addurilka
 Domain Path: /languages
 Description: A simple plugin that adds a widget to the admin panel to add and verify the site links to search engine.
-Version: 0.5.1
+Version: 0.7
 Author: jon4god
 Author URI: http://starcoms.ru
 License: GPL2
@@ -62,7 +62,7 @@ function wp_ya_addurl($wp_ya_addurl_admin_bar) {
 		return $sent_url;
 	}
 	$linkforsenttoyandex = 'http://webmaster.yandex.ru/addurl.xml?url='.addurl_get_sent_URL();
-	$linkforsenttogoogle = 'https://www.google.com/Webmaster/tools/submit-url?urlnt='.addurl_get_sent_URL();
+	$linkforsenttogoogle = 'https://www.google.com/webmasters/tools/submit-url?urlnt='.addurl_get_sent_URL();
 
 	if (get_option('wp_ya_addurl_setting_autocheck') == true) {
 		$addurilkacheck = '&#9675; ';
@@ -344,84 +344,21 @@ $args = array(
 		$wp_ya_addurl_admin_bar->add_node($args);
 }
 
-add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
 function wp_ya_addurl_settings_init() {
-	add_settings_field(
-		'wp_ya_addurl_setting_user',
-		__('User', 'addurilka'),
-		'wp_ya_addurl_setting_user',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_user' );
-
-	add_settings_field(
-		'wp_ya_addurl_setting_user_key',
-		__('Key', 'addurilka'),
-		'wp_ya_addurl_setting_user_key',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_user_key' );
-
-	add_settings_field(
-		'wp_ya_addurl_setting_user_ip',
-		__('IP', 'addurilka'),
-		'wp_ya_addurl_setting_user_ip',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_user_ip' );
-	
-	add_settings_field(
-		'wp_ya_addurl_setting_autocheck',
-		__('Аutocheck', 'addurilka'),
-		'wp_ya_addurl_setting_autocheck',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_autocheck' );
-	
-	add_settings_field(
-		'wp_ya_addurl_setting_short_name',
-		__('Short name', 'addurilka'),
-		'wp_ya_addurl_setting_short_name',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_short_name' );
-	
-	add_settings_field(
-		'wp_ya_addurl_setting_show_yandex',
-		__('Show Yandex', 'addurilka'),
-		'wp_ya_addurl_setting_show_yandex',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_show_yandex' );
-
-	add_settings_field(
-		'wp_ya_addurl_setting_show_google',
-		__('Show Google', 'addurilka'),
-		'wp_ya_addurl_setting_show_google',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_show_google' );
-	
-	add_settings_field(
-		'wp_ya_addurl_setting_webmaster_tool',
-		__('Show Webmaster Tools', 'addurilka'),
-		'wp_ya_addurl_setting_webmaster_tool',
-		'reading',
-		'wp_ya_addurl_plugin_menu'
-	);
-	register_setting( 'reading', 'wp_ya_addurl_setting_webmaster_tool' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_user' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_user_key' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_user_ip' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_autocheck' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_short_name' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_show_yandex' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_show_google' );
+	register_setting( 'wp_ya_addurl_setting', 'wp_ya_addurl_setting_webmaster_tool' );
 }
 
 add_action('admin_menu', 'wp_ya_addurl_plugin_menu');
 function wp_ya_addurl_plugin_menu() {
 	add_options_page(__('Addurilka', 'addurilka'), __('Addurilka', 'addurilka'), 'manage_options', 'wp_ya_addurl-plugin', 'wp_ya_addurl_plugin_page');
+	add_action( 'admin_init', 'wp_ya_addurl_settings_init' );
 }
 
 function wp_ya_addurl_plugin_page(){
@@ -436,7 +373,7 @@ function wp_ya_addurl_plugin_page(){
 	echo "<p>&#9675; " . __('Addurilka - no url in Yandex and Google', 'addurilka') . "</p>";
 	echo "<h3>" . __('Main options', 'addurilka') . "</h3>";
 	echo '<form action="options.php" method="post">';
-	wp_nonce_field('update-options');
+	settings_fields( 'wp_ya_addurl_setting' );
 	echo '<table class="form-table">
 	<tr valign="top">
 	<th scope="row">' . __('Enable short name', 'addurilka') . '<p class="description">' . __('Show "A"', 'addurilka') . '</p></th>
@@ -494,14 +431,11 @@ function wp_ya_addurl_plugin_page(){
 	echo '</td>
 	</tr>
 	</table>
-	</div>
-				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="wp_ya_addurl_setting_show_google,wp_ya_addurl_setting_webmaster_tool,wp_ya_addurl_setting_show_yandex,wp_ya_addurl_setting_short_name,wp_ya_addurl_setting_user,wp_ya_addurl_setting_user_key,wp_ya_addurl_setting_user_ip,wp_ya_addurl_setting_autocheck" />';
-	echo '<p class="submit"><input type="submit" class="button-primary" value="' . __('Save setting', 'addurilka') .'"></p>
-				</form>';
+	</div>';
+	submit_button();
+	echo '</form>';
   echo '</td>';
   ?>
-  <!-- !Информация о плагине -->
   <td valign="top" align="left" width="30%">
   <div style="padding: 1.5em; background-color: #FAFAFA; border: 1px solid #ddd; margin: 1em; float: right; width: 22em;">
 	<h3><?php _e('Thanks for using Addurilka', 'addurilka') ?></h3>
